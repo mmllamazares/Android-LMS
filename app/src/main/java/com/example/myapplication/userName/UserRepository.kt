@@ -9,4 +9,8 @@ class UserRepository(private val userDao: UserDao) {
     suspend fun saveUser(name: String) {
         userDao.insertUser(UserEntity(name = name))
     }
+
+    suspend fun updateUser(name: String, id: Int) {
+        userDao.updateUser(UserEntity(id = id, name = name))
+    }
 }

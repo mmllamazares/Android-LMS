@@ -25,6 +25,14 @@ class UserNameViewModel(application: Application) : AndroidViewModel(application
         }
     }
 
+    fun updateUserName(name: String) {
+        viewModelScope.launch {
+            // Necesitamos el id del usuario actual para actualizarlo
+            val currentId = userName.value?.id ?: return@launch
+            repository.updateUser(name, currentId)
+        }
+    }
+
 //    private val _userName = MutableLiveData<String>()
 //    val userName: LiveData<String> = _userName
 //

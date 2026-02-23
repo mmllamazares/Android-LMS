@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.myapplication.mainView.MainView
@@ -25,7 +27,17 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             MyApplicationTheme {
-                MainView()
+                // Observa si existe un usuario guardado en la BD
+                val savedUser by viewModel.userName.observeAsState()
+
+                when {
+                    // Todavía Room no respondió — no renderiza nada para evitar un flash
+                    savedUser == null -> UserNameView(viewModel)
+
+                    // Ya hay usuario registrado → va directo a los cursos
+                    else -> MainView()
+                }
+//                MainView()
 //                UserNameView(viewModel)
 //                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
 ////                    Greeting(

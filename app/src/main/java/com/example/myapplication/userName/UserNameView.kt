@@ -27,7 +27,10 @@ import androidx.compose.ui.unit.sp
 import com.example.myapplication.R
 
 @Composable
-fun UserNameView(viewModel: UserNameViewModel) {
+fun UserNameView(
+    viewModel: UserNameViewModel,
+    onBack: (() -> Unit)? = null
+) {
     Box(
         Modifier
             .fillMaxSize()
@@ -39,7 +42,7 @@ fun UserNameView(viewModel: UserNameViewModel) {
 }
 
 @Composable
-fun UserName(modifier: Modifier,viewModel: UserNameViewModel) {
+fun UserName(modifier: Modifier, viewModel: UserNameViewModel) {
     var textFieldState by remember { mutableStateOf("") }
     val context = LocalContext.current
 
@@ -63,7 +66,7 @@ fun UserName(modifier: Modifier,viewModel: UserNameViewModel) {
                 modifier = Modifier.padding(bottom = 8.dp)
             )
         }
-        UserNameTextField( value = textFieldState, onValueChange = {textFieldState = it})
+        UserNameTextField(value = textFieldState, onValueChange = { textFieldState = it })
         Spacer(modifier = Modifier.padding(8.dp))
         Button(
             onClick = {
@@ -93,7 +96,7 @@ fun UserName(modifier: Modifier,viewModel: UserNameViewModel) {
 }
 
 @Composable
-fun UserNameTextField(value: String, onValueChange: (String)-> Unit) {
+fun UserNameTextField(value: String, onValueChange: (String) -> Unit) {
 
     var textFieldState by remember {
         mutableStateOf("")

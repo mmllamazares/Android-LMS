@@ -60,6 +60,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.example.myapplication.userName.UserNameViewModel
 
 // colores
 private val PrimaryBlue = Color(0xFF1A3ADB)
@@ -128,18 +129,33 @@ private val dummyCourses = listOf(
     )
 )
 
+enum class CoursesTab { Inicio, Cursos, Progreso, Perfil }
+
 @Composable
-fun MainView() {
+fun MainView(
+    viewModel: UserNameViewModel,
+    onNavigateToProfile: () -> Unit
+) {
 
     var textFieldState by remember { mutableStateOf("") }
 
 //    @Composable
 //    fun CoursesView() {
-
+    var currentTab by remember { mutableStateOf(CoursesTab.Cursos) }
 
     Scaffold(
         topBar = { TopBarHeaderMix() },
-        bottomBar = { BottomNavBar() },
+        bottomBar = {
+            BottomNavBar(
+                currentTab = currentTab,
+                onTabSelected = { tab ->
+                    if (tab == CoursesTab.Perfil) {
+                        onNavigateToProfile()
+                    } else {
+                        currentTab = tab
+                    }
+                })
+        },
         containerColor = BackgroundGray
     ) { innerPadding ->
         LazyColumn(
@@ -508,7 +524,10 @@ fun CourseButton(label: String, isPrimary: Boolean) {
 }
 
 @Composable
-fun BottomNavBar() {
+fun BottomNavBar(
+    currentTab: CoursesTab,
+    onTabSelected: (CoursesTab) -> Unit
+) {
 //    val items = List(
 //        Triple("Inicio",    Icons.Outlined.Home,        false),
 //        Triple("Cursos",    Icons.Filled.MenuBook,      true),
@@ -557,7 +576,7 @@ fun BottomNavBar() {
         )
         NavigationBarItem(
             selected = false,
-            onClick = {},
+            onClick = { onTabSelected(CoursesTab.Perfil) },
             icon = {
                 Icon(Icons.Outlined.Person, contentDescription = "Perfil")
             },

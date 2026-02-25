@@ -152,7 +152,7 @@ fun BottomNavBar(
         )
         NavigationBarItem(
             selected = false,
-            onClick = {},
+            onClick = {navController.navigate(route= AppScreens.ProgressView.route)},
             icon = {
                 Icon(Icons.Outlined.CheckCircle, contentDescription = "Progreso")
             },

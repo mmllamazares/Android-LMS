@@ -46,6 +46,9 @@ dependencies {
     implementation(libs.androidx.compose.runtime.livedata)
     val room_version = "2.8.4"
 
+    val nav_version = "2.9.7"
+
+    implementation("androidx.navigation:navigation-compose:$nav_version")
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
 //    implementation(livedata)

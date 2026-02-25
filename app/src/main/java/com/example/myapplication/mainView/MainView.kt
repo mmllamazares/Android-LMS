@@ -133,8 +133,8 @@ enum class CoursesTab { Inicio, Cursos, Progreso, Perfil }
 
 @Composable
 fun MainView(
-    viewModel: UserNameViewModel,
-    onNavigateToProfile: () -> Unit
+    viewModel: UserNameViewModel?,
+    onNavigateToProfile: () -> Unit?
 ) {
 
     var textFieldState by remember { mutableStateOf("") }

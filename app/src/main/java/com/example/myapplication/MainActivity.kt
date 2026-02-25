@@ -19,17 +19,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.myapplication.mainView.MainView
+import com.example.myapplication.navigation.AppNavigation
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import com.example.myapplication.userName.UserNameView
 import com.example.myapplication.userName.UserNameViewModel
 
 
 // Todas las pantallas posibles de la app
-enum class AppScreen {
-    UserName,
-    Courses,
-    Profile
-}
+//enum class AppScreen {
+//    UserName,
+//    Courses,
+//    Profile
+//}
 class MainActivity : ComponentActivity() {
     private val viewModel: UserNameViewModel by viewModels()
 
@@ -41,41 +42,43 @@ class MainActivity : ComponentActivity() {
 
                 val savedUser by viewModel.userName.observeAsState()
 
-                // Pantalla actual — arranca en Courses si hay usuario, si no en UserName
-                var currentScreen by remember(savedUser) {
-                    mutableStateOf(
-                        if (savedUser != null) AppScreen.Courses else AppScreen.UserName
-                    )
-                }
+                AppNavigation(viewModel)
 
-                // Intercepta el botón físico de atrás
-                // Solo actúa cuando estás en Profile, regresa a Courses
-                BackHandler(enabled = currentScreen == AppScreen.Profile) {
-                    currentScreen = AppScreen.Courses
-                }
-
-                when (currentScreen) {
-                    AppScreen.UserName -> UserNameView(
-                        viewModel = viewModel,
-                        onBack = if (savedUser != null) {
-                            // Si ya tiene usuario, puede volver atrás (viene desde Perfil)
-                            { currentScreen = AppScreen.Courses }
-                        } else {
-                            // Primera vez — no hay botón atrás
-                            null
-                        }
-                    )
-
-                    AppScreen.Courses -> MainView(
-                        viewModel = viewModel,
-                        onNavigateToProfile = { currentScreen = AppScreen.Profile }
-                    )
-
-                    AppScreen.Profile -> UserNameView(
-                        viewModel = viewModel,
-                        onBack = { currentScreen = AppScreen.Courses }
-                    )
-                }
+//                // Pantalla actual — arranca en Courses si hay usuario, si no en UserName
+//                var currentScreen by remember(savedUser) {
+//                    mutableStateOf(
+//                        if (savedUser != null) AppScreen.Courses else AppScreen.UserName
+//                    )
+//                }
+//
+//                // Intercepta el botón físico de atrás
+//                // Solo actúa cuando estás en Profile, regresa a Courses
+//                BackHandler(enabled = currentScreen == AppScreen.Profile) {
+//                    currentScreen = AppScreen.Courses
+//                }
+//
+//                when (currentScreen) {
+//                    AppScreen.UserName -> UserNameView(
+//                        viewModel = viewModel,
+//                        onBack = if (savedUser != null) {
+//                            // Si ya tiene usuario, puede volver atrás (viene desde Perfil)
+//                            { currentScreen = AppScreen.Courses }
+//                        } else {
+//                            // Primera vez — no hay botón atrás
+//                            null
+//                        }
+//                    )
+//
+//                    AppScreen.Courses -> MainView(
+//                        viewModel = viewModel,
+//                        onNavigateToProfile = { currentScreen = AppScreen.Profile }
+//                    )
+//
+//                    AppScreen.Profile -> UserNameView(
+//                        viewModel = viewModel,
+//                        onBack = { currentScreen = AppScreen.Courses }
+//                    )
+//                }
 
 
 //                // Observa si existe un usuario guardado en la BD

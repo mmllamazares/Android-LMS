@@ -6,12 +6,16 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.launch
 
 class UserNameViewModel(application: Application) : AndroidViewModel(application) {
 
     private val repository: UserRepository
     val userName: LiveData<UserEntity>
+
 
     init {
         val dao = AppDatabase.getInstance(application).userDao()

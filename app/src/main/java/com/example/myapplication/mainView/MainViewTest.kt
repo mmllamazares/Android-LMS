@@ -47,48 +47,50 @@ data class CourseItemTest(
     val buttonLabel: String,
     val imageColor: Color
 )
+ object Courses {
 
-private val dummyCourses = listOf(
-    CourseItem(
-        title = "Preparación de Cavidades",
-        description = "Principios de Black y técnicas modernas de remoción de tejido.",
-        progress = 0.65f,
-        totalLessons = 18,
-        completedLessons = 12,
-        duration = null,
-        modules = null,
-        students = null,
-        avatarColors = null,
-        buttonLabel = "Continuar Aprendiendo",
-        imageColor = Color(0xFF1E3A5F)
-    ),
-    CourseItem(
-        title = "Materiales Dentales",
-        description = "Resinas, ionómeros y adhesivos de última generación.",
-        progress = null,
-        totalLessons = null,
-        completedLessons = null,
-        duration = "4h 30m",
-        modules = 8,
-        students = null,
-        avatarColors = null,
-        buttonLabel = "Ver Detalles",
-        imageColor = Color(0xFF2D6A4F)
-    ),
-    CourseItem(
-        title = "Instrumental Quirúrgico",
-        description = "Reconocimiento y uso de instrumental rotatorio y manual.",
-        progress = null,
-        totalLessons = null,
-        completedLessons = null,
-        duration = null,
-        modules = null,
-        students = 120,
-        avatarColors = listOf(Color(0xFF6366F1), Color(0xFF10B981), Color(0xFFF59E0B)),
-        buttonLabel = "Empezar Curso",
-        imageColor = Color(0xFF1F4068)
-    )
-)
+      val dummyCourses = listOf(
+         CourseItem(
+             title = "Preparación de Cavidades",
+             description = "Principios de Black y técnicas modernas de remoción de tejido.",
+             progress = 0.65f,
+             totalLessons = 18,
+             completedLessons = 12,
+             duration = null,
+             modules = null,
+             students = null,
+             avatarColors = null,
+             buttonLabel = "Continuar Aprendiendo",
+             imageColor = Color(0xFF1E3A5F)
+         ),
+         CourseItem(
+             title = "Materiales Dentales",
+             description = "Resinas, ionómeros y adhesivos de última generación.",
+             progress = null,
+             totalLessons = null,
+             completedLessons = null,
+             duration = "4h 30m",
+             modules = 8,
+             students = null,
+             avatarColors = null,
+             buttonLabel = "Ver Detalles",
+             imageColor = Color(0xFF2D6A4F)
+         ),
+         CourseItem(
+             title = "Instrumental Quirúrgico",
+             description = "Reconocimiento y uso de instrumental rotatorio y manual.",
+             progress = null,
+             totalLessons = null,
+             completedLessons = null,
+             duration = null,
+             modules = null,
+             students = 120,
+             avatarColors = listOf(Color(0xFF6366F1), Color(0xFF10B981), Color(0xFFF59E0B)),
+             buttonLabel = "Empezar Curso",
+             imageColor = Color(0xFF1F4068)
+         )
+     )
+ }
 
 @Composable
 fun MainViewTest(navController: NavController) {
@@ -104,8 +106,9 @@ fun MainViewTest(navController: NavController) {
                 .padding(innerPadding),
             contentPadding = PaddingValues(bottom = 16.dp)
         ) {
-            items(dummyCourses.size) { index ->
-                CourseCard(course = dummyCourses[index])
+            items(Courses.dummyCourses.size) { index ->
+                CourseCard(course = Courses.dummyCourses[index])
+//                CourseCard(course = Courses.dummyCourses.filter { it.title.contain("") }[index])
             }
 //            items(1) {
 //                Text(text = "Hola mundo")

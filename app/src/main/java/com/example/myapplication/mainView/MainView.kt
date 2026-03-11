@@ -60,6 +60,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.navigation.NavController
+import com.example.myapplication.navigation.AppScreens
 import com.example.myapplication.userName.UserNameViewModel
 
 // colores
@@ -73,90 +75,71 @@ private val CardWhite = Color(0xFFFFFFFF)
 private val GreenProgress = Color(0xFF10B981)
 private val TagBackground = Color(0xFFF0F0F5)
 
-data class CourseItem(
-    val title: String,
-    val description: String,
-    val progress: Float?,        // null = no iniciado
-    val totalLessons: Int?,
-    val completedLessons: Int?,
-    val duration: String?,
-    val modules: Int?,
-    val students: Int?,
-    val avatarColors: List<Color>?,
-    val buttonLabel: String,
-    val imageColor: Color
-)
-
-private val dummyCourses = listOf(
-    CourseItem(
-        title = "Preparación de Cavidades",
-        description = "Principios de Black y técnicas modernas de remoción de tejido.",
-        progress = 0.65f,
-        totalLessons = 18,
-        completedLessons = 12,
-        duration = null,
-        modules = null,
-        students = null,
-        avatarColors = null,
-        buttonLabel = "Continuar Aprendiendo",
-        imageColor = Color(0xFF1E3A5F)
-    ),
-    CourseItem(
-        title = "Materiales Dentales",
-        description = "Resinas, ionómeros y adhesivos de última generación.",
-        progress = null,
-        totalLessons = null,
-        completedLessons = null,
-        duration = "4h 30m",
-        modules = 8,
-        students = null,
-        avatarColors = null,
-        buttonLabel = "Ver Detalles",
-        imageColor = Color(0xFF2D6A4F)
-    ),
-    CourseItem(
-        title = "Instrumental Quirúrgico",
-        description = "Reconocimiento y uso de instrumental rotatorio y manual.",
-        progress = null,
-        totalLessons = null,
-        completedLessons = null,
-        duration = null,
-        modules = null,
-        students = 120,
-        avatarColors = listOf(Color(0xFF6366F1), Color(0xFF10B981), Color(0xFFF59E0B)),
-        buttonLabel = "Empezar Curso",
-        imageColor = Color(0xFF1F4068)
-    )
-)
+//data class CourseItem(
+//    val title: String,
+//    val description: String,
+//    val progress: Float?,        // null = no iniciado
+//    val totalLessons: Int?,
+//    val completedLessons: Int?,
+//    val duration: String?,
+//    val modules: Int?,
+//    val students: Int?,
+//    val avatarColors: List<Color>?,
+//    val buttonLabel: String,
+//    val imageColor: Color
+//)
+//
+//private val dummyCourses = listOf(
+//    CourseItem(
+//        title = "Preparación de Cavidades",
+//        description = "Principios de Black y técnicas modernas de remoción de tejido.",
+//        progress = 0.65f,
+//        totalLessons = 18,
+//        completedLessons = 12,
+//        duration = null,
+//        modules = null,
+//        students = null,
+//        avatarColors = null,
+//        buttonLabel = "Continuar Aprendiendo",
+//        imageColor = Color(0xFF1E3A5F)
+//    ),
+//    CourseItem(
+//        title = "Materiales Dentales",
+//        description = "Resinas, ionómeros y adhesivos de última generación.",
+//        progress = null,
+//        totalLessons = null,
+//        completedLessons = null,
+//        duration = "4h 30m",
+//        modules = 8,
+//        students = null,
+//        avatarColors = null,
+//        buttonLabel = "Ver Detalles",
+//        imageColor = Color(0xFF2D6A4F)
+//    ),
+//    CourseItem(
+//        title = "Instrumental Quirúrgico",
+//        description = "Reconocimiento y uso de instrumental rotatorio y manual.",
+//        progress = null,
+//        totalLessons = null,
+//        completedLessons = null,
+//        duration = null,
+//        modules = null,
+//        students = 120,
+//        avatarColors = listOf(Color(0xFF6366F1), Color(0xFF10B981), Color(0xFFF59E0B)),
+//        buttonLabel = "Empezar Curso",
+//        imageColor = Color(0xFF1F4068)
+//    )
+//)
 
 enum class CoursesTab { Inicio, Cursos, Progreso, Perfil }
 
 @Composable
-fun MainView(
-    viewModel: UserNameViewModel?,
-    onNavigateToProfile: () -> Unit?
-) {
-
-    var textFieldState by remember { mutableStateOf("") }
-
-//    @Composable
-//    fun CoursesView() {
-    var currentTab by remember { mutableStateOf(CoursesTab.Cursos) }
-
+fun MainView(navController: NavController) {
     Scaffold(
         topBar = { TopBarHeaderMix() },
         bottomBar = {
-            BottomNavBar(
-                currentTab = currentTab,
-                onTabSelected = { tab ->
-                    if (tab == CoursesTab.Perfil) {
-                        onNavigateToProfile()
-                    } else {
-                        currentTab = tab
-                    }
-                })
-        },
-        containerColor = BackgroundGray
+            BottomNavBar(navController)
+        }, containerColor = BackgroundGray
     ) { innerPadding ->
         LazyColumn(
             modifier = Modifier
@@ -164,59 +147,15 @@ fun MainView(
                 .padding(innerPadding),
             contentPadding = PaddingValues(bottom = 16.dp)
         ) {
-//                item { Header() }
-//                item { SearchBar() }
-//                item {
-//                    TitleSection()
-////                    SectionHeader(
-////                        title = "Operatoria Técnica",
-////                        subtitle = "Especialidad de odontología restauradora"
-////                    )
-//                }
-            items(dummyCourses.size) { index ->
-                CourseCard(course = dummyCourses[index])
+            items(Courses.dummyCourses.size) { index ->
+                CourseCard(course = Courses.dummyCourses[index])
+//                CourseCard(course = Courses.dummyCourses.filter { it.title.contain("") }[index])
             }
+//            items(1) {
+//                Text(text = "Hola mundo")
+//            }
         }
     }
-//    }
-
-//    Box(
-//        modifier = Modifier
-//            .fillMaxSize()
-////            .padding(16.dp)
-//            .background(Color.LightGray)
-//    ) {
-//        Column() {
-//            Header()
-//            Spacer(modifier = Modifier.padding(5.dp))
-////            SearchTextField(value = textFieldState, onValueChange = { textFieldState = it })
-//            SearchBar()
-//            Spacer(modifier = Modifier.padding(5.dp))
-//            TitleSection()
-//            Spacer(modifier = Modifier.padding(5.dp))
-//            LazyColumn(
-//                modifier = Modifier
-//                    .fillMaxSize()
-//                    .padding(bottom = 16.dp)
-////                    .padding(innerPadding),
-////                contentPadding = PaddingValues(bottom = 16.dp)
-//            ) {
-////                item { TopBar() }
-////                item { SearchBar() }
-////                item {
-////                    SectionHeader(
-////                        title = "Operatoria Técnica",
-////                        subtitle = "Especialidad de odontología restauradora"
-////                    )
-////                }
-//                items(dummyCourses.size) { index ->
-//                    CourseCard(course = dummyCourses[index])
-//                }
-//            }
-//            BottomNavBar()
-//
-//        }
-//    }
 }
 
 @Composable
@@ -525,8 +464,9 @@ fun CourseButton(label: String, isPrimary: Boolean) {
 
 @Composable
 fun BottomNavBar(
-    currentTab: CoursesTab,
-    onTabSelected: (CoursesTab) -> Unit
+    navController: NavController
+//    currentTab: CoursesTab,
+//    onTabSelected: (CoursesTab) -> Unit
 ) {
 //    val items = List(
 //        Triple("Inicio",    Icons.Outlined.Home,        false),
@@ -559,7 +499,7 @@ fun BottomNavBar(
         )
         NavigationBarItem(
             selected = false,
-            onClick = {},
+            onClick = {navController.navigate(route= AppScreens.ProgressView.route)},
             icon = {
                 Icon(Icons.Outlined.CheckCircle, contentDescription = "Progreso")
             },
@@ -576,7 +516,8 @@ fun BottomNavBar(
         )
         NavigationBarItem(
             selected = false,
-            onClick = { onTabSelected(CoursesTab.Perfil) },
+//            onClick = { onTabSelected(CoursesTab.Perfil) },
+            onClick = { navController.navigate(route = AppScreens.UserView.route) },
             icon = {
                 Icon(Icons.Outlined.Person, contentDescription = "Perfil")
             },
@@ -592,5 +533,76 @@ fun BottomNavBar(
             )
         )
     }
-}
+    }
+
+//@Composable
+//fun BottomNavBar(
+//    currentTab: CoursesTab,
+//    onTabSelected: (CoursesTab) -> Unit
+//) {
+////    val items = List(
+////        Triple("Inicio",    Icons.Outlined.Home,        false),
+////        Triple("Cursos",    Icons.Filled.MenuBook,      true),
+////        Triple("Progreso",  Icons.Outlined.BarChart,    false),
+////        Triple("Perfil",    Icons.Outlined.Person,      false),
+////    )
+//
+//    NavigationBar(
+//        containerColor = CardWhite,
+//        tonalElevation = 8.dp
+//    ) {
+//
+//        NavigationBarItem(
+//            selected = true,
+//            onClick = {},
+//            icon = {
+//                Icon(Icons.Outlined.Home, contentDescription = "Temas")
+//            },
+//            label = {
+//                Text("Temas", fontSize = 11.sp)
+//            },
+//            colors = NavigationBarItemDefaults.colors(
+//                selectedIconColor = PrimaryBlue,
+//                selectedTextColor = PrimaryBlue,
+//                indicatorColor = LightBlue,
+//                unselectedIconColor = TextSecondary,
+//                unselectedTextColor = TextSecondary
+//            )
+//        )
+//        NavigationBarItem(
+//            selected = false,
+//            onClick = {},
+//            icon = {
+//                Icon(Icons.Outlined.CheckCircle, contentDescription = "Progreso")
+//            },
+//            label = {
+//                Text("Progreso", fontSize = 11.sp)
+//            },
+//            colors = NavigationBarItemDefaults.colors(
+//                selectedIconColor = PrimaryBlue,
+//                selectedTextColor = PrimaryBlue,
+//                indicatorColor = LightBlue,
+//                unselectedIconColor = TextSecondary,
+//                unselectedTextColor = TextSecondary
+//            )
+//        )
+//        NavigationBarItem(
+//            selected = false,
+//            onClick = { onTabSelected(CoursesTab.Perfil) },
+//            icon = {
+//                Icon(Icons.Outlined.Person, contentDescription = "Perfil")
+//            },
+//            label = {
+//                Text("Perfil", fontSize = 11.sp)
+//            },
+//            colors = NavigationBarItemDefaults.colors(
+//                selectedIconColor = PrimaryBlue,
+//                selectedTextColor = PrimaryBlue,
+//                indicatorColor = LightBlue,
+//                unselectedIconColor = TextSecondary,
+//                unselectedTextColor = TextSecondary
+//            )
+//        )
+//    }
+//}
 

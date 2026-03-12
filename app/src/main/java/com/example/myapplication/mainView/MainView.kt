@@ -45,6 +45,7 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -60,6 +61,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.myapplication.navigation.AppScreens
 import com.example.myapplication.userName.UserNameViewModel
@@ -76,10 +78,16 @@ private val GreenProgress = Color(0xFF10B981)
 private val TagBackground = Color(0xFFF0F0F5)
 
 
+
+
 @Composable
 fun MainView(navController: NavController) {
+    val viewModel = viewModel<MainViewModel>()
+    val searchText by viewModel.searchText.collectAsState()
+    val courses by viewModel.courses.collectAsState()
+
     Scaffold(
-        topBar = { TopBarHeaderMix() },
+        topBar = { TopBarHeaderMix(searchText,viewModel) },
         bottomBar = {
             BottomNavBar(navController)
         }, containerColor = BackgroundGray
@@ -90,10 +98,14 @@ fun MainView(navController: NavController) {
                 .padding(innerPadding),
             contentPadding = PaddingValues(bottom = 16.dp)
         ) {
-            items(Courses.dummyCourses.size) { index ->
-                CourseCard(course = Courses.dummyCourses[index])
+            items(courses.size) { index ->
+                CourseCard(course = courses[index])
 //                CourseCard(course = Courses.dummyCourses.filter { it.title.contain("") }[index])
             }
+//            items(Courses.dummyCourses.size) { index ->
+//                CourseCard(course = Courses.dummyCourses[index])
+////                CourseCard(course = Courses.dummyCourses.filter { it.title.contain("") }[index])
+//            }
 //            items(1) {
 //                Text(text = "Hola mundo")
 //            }
@@ -102,12 +114,12 @@ fun MainView(navController: NavController) {
 }
 
 @Composable
-fun TopBarHeaderMix() {
+fun TopBarHeaderMix(searchText: String, viewModel: MainViewModel) {
     Column() {
         Header()
         Spacer(modifier = Modifier.padding(5.dp))
 //            SearchTextField(value = textFieldState, onValueChange = { textFieldState = it })
-        SearchBar()
+        SearchBar(searchText,viewModel)
         Spacer(modifier = Modifier.padding(5.dp))
         TitleSection()
     }
@@ -152,11 +164,11 @@ fun SearchTextField(value: String, onValueChange: (String) -> Unit) {
 }
 
 @Composable
-fun SearchBar() {
-    var query by remember { mutableStateOf("") }
+fun SearchBar(searchText: String, viewModel: MainViewModel) {
+//    var query by remember { mutableStateOf("") }
     OutlinedTextField(
-        value = query,
-        onValueChange = { query = it },
+        value = searchText,
+        onValueChange = viewModel::onSearchTextChange,
         placeholder = {
             Text(
                 "Buscar temas",

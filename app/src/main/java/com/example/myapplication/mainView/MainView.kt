@@ -78,8 +78,6 @@ private val GreenProgress = Color(0xFF10B981)
 private val TagBackground = Color(0xFFF0F0F5)
 
 
-
-
 @Composable
 fun MainView(navController: NavController) {
     val viewModel = viewModel<MainViewModel>()
@@ -87,7 +85,7 @@ fun MainView(navController: NavController) {
     val courses by viewModel.courses.collectAsState()
 
     Scaffold(
-        topBar = { TopBarHeaderMix(searchText,viewModel) },
+        topBar = { TopBarHeaderMix(searchText, viewModel) },
         bottomBar = {
             BottomNavBar(navController)
         }, containerColor = BackgroundGray
@@ -119,7 +117,7 @@ fun TopBarHeaderMix(searchText: String, viewModel: MainViewModel) {
         Header()
         Spacer(modifier = Modifier.padding(5.dp))
 //            SearchTextField(value = textFieldState, onValueChange = { textFieldState = it })
-        SearchBar(searchText,viewModel)
+        SearchBar(searchText, viewModel)
         Spacer(modifier = Modifier.padding(5.dp))
         TitleSection()
     }
@@ -292,7 +290,7 @@ fun CourseCard(course: CourseItem, navController: NavController) {
             // Botón
             CourseButton(
                 label = course.buttonLabel,
-                isPrimary = course.progress != null, navController
+                isPrimary = course.progress != null, navController, course
             )
         }
     }
@@ -385,7 +383,12 @@ fun StudentsSection(course: CourseItem) {
 }
 
 @Composable
-fun CourseButton(label: String, isPrimary: Boolean,navController: NavController) {
+fun CourseButton(
+    label: String,
+    isPrimary: Boolean,
+    navController: NavController,
+    courseItem: CourseItem
+) {
     if (isPrimary) {
         Button(
             onClick = {},
@@ -403,7 +406,7 @@ fun CourseButton(label: String, isPrimary: Boolean,navController: NavController)
         }
     } else {
         OutlinedButton(
-            onClick = {navController.navigate("course_detail_view")},
+            onClick = { navController.navigate(AppScreens.CourseDetailView.withArgs(courseItem.id)) },
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.outlinedButtonColors(contentColor = TextPrimary)
@@ -445,7 +448,7 @@ fun BottomNavBar(
         )
         NavigationBarItem(
             selected = false,
-            onClick = {navController.navigate(route= AppScreens.ProgressView.route)},
+            onClick = { navController.navigate(route = AppScreens.ProgressView.route) },
             icon = {
                 Icon(Icons.Outlined.CheckCircle, contentDescription = "Progreso")
             },
@@ -479,6 +482,6 @@ fun BottomNavBar(
             )
         )
     }
-    }
+}
 
 

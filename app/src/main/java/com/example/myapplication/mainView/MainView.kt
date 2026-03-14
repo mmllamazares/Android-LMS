@@ -72,7 +72,7 @@ private val LightBlue = Color(0xFFEEF1FF)
 private val AccentBlue = Color(0xFF4A6CF7)
 private val TextPrimary = Color(0xFF0D0D2B)
 private val TextSecondary = Color(0xFF6B7280)
-private val BackgroundGray = Color(0xFFF5F6FA)
+val BackgroundGray = Color(0xFFF5F6FA)
 private val CardWhite = Color(0xFFFFFFFF)
 private val GreenProgress = Color(0xFF10B981)
 private val TagBackground = Color(0xFFF0F0F5)
@@ -99,7 +99,7 @@ fun MainView(navController: NavController) {
             contentPadding = PaddingValues(bottom = 16.dp)
         ) {
             items(courses.size) { index ->
-                CourseCard(course = courses[index])
+                CourseCard(course = courses[index], navController)
 //                CourseCard(course = Courses.dummyCourses.filter { it.title.contain("") }[index])
             }
 //            items(Courses.dummyCourses.size) { index ->
@@ -214,7 +214,7 @@ fun TitleSection(
 }
 
 @Composable
-fun CourseCard(course: CourseItem) {
+fun CourseCard(course: CourseItem, navController: NavController) {
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -292,7 +292,7 @@ fun CourseCard(course: CourseItem) {
             // Botón
             CourseButton(
                 label = course.buttonLabel,
-                isPrimary = course.progress != null
+                isPrimary = course.progress != null, navController
             )
         }
     }
@@ -385,7 +385,7 @@ fun StudentsSection(course: CourseItem) {
 }
 
 @Composable
-fun CourseButton(label: String, isPrimary: Boolean) {
+fun CourseButton(label: String, isPrimary: Boolean,navController: NavController) {
     if (isPrimary) {
         Button(
             onClick = {},
@@ -403,7 +403,7 @@ fun CourseButton(label: String, isPrimary: Boolean) {
         }
     } else {
         OutlinedButton(
-            onClick = {},
+            onClick = {navController.navigate("course_detail_view")},
             modifier = Modifier.fillMaxWidth(),
             shape = RoundedCornerShape(12.dp),
             colors = ButtonDefaults.outlinedButtonColors(contentColor = TextPrimary)

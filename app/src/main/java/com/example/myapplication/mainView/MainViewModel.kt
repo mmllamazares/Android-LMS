@@ -27,7 +27,9 @@ class MainViewModel : ViewModel() {
             if (text.isBlank()) {
                 courses
             } else {
-                courses.filter { it.title.lowercase(getDefault()).contains(text.lowercase(getDefault())) }
+                courses.filter {
+                    it.title.lowercase(getDefault()).contains(text.lowercase(getDefault()))
+                }
             }
         }.stateIn(
             viewModelScope,

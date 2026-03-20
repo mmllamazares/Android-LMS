@@ -1,6 +1,9 @@
 package com.example.myapplication.userName
 
 import androidx.lifecycle.LiveData
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 // UserRepository.kt
 class UserRepository(private val userDao: UserDao) {
@@ -12,5 +15,10 @@ class UserRepository(private val userDao: UserDao) {
 
     suspend fun updateUser(name: String, id: Int) {
         userDao.updateUser(UserEntity(id = id, name = name))
+    }
+
+    suspend fun saveQuizResult(userId: Int, score: Int, totalQuestions: Int) {
+        val currentDate = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(Date())
+        userDao.updateQuizResult(userId, score, totalQuestions, currentDate)
     }
 }

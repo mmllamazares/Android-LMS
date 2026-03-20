@@ -5,11 +5,15 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.myapplication.userName.UserRepository
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class QuizViewModel(private val repository: QuizRepository = QuizRepository()) :
+class QuizViewModel(
+    private val repository: QuizRepository = QuizRepository(),
+    private val userRepository: UserRepository? = null  // ← AGREGAR
+) :
     ViewModel() {
     private val questions = repository.getAllQuestions()
 
@@ -28,14 +32,14 @@ class QuizViewModel(private val repository: QuizRepository = QuizRepository()) :
     var quizFinished by mutableStateOf(false)
         private set
 
-    private var timerJob : Job? = null
+    private var timerJob: Job? = null
 
-    val totalQuestions : Int
+    val totalQuestions: Int
         get() = questions.size
 
-    fun startTimer(){
-        timerJob =  viewModelScope.launch {
-            while (timerValue > 0){
+    fun startTimer() {
+        timerJob = viewModelScope.launch {
+            while (timerValue > 0) {
                 delay(1000)
                 timerValue--
             }
@@ -44,20 +48,20 @@ class QuizViewModel(private val repository: QuizRepository = QuizRepository()) :
         }
     }
 
-    fun answerQuestion(userAnswer: Boolean){
+    fun answerQuestion(userAnswer: Boolean) {
         timerJob?.cancel()
-        if (userAnswer == currentQuestion.answer){
+        if (userAnswer == currentQuestion.answer) {
             score++
         }
         currentIndex++
-        if (currentIndex<questions.size){
+        if (currentIndex < questions.size) {
             startNewQuestion()
-        }else {
+        } else {
             finishQuiz()
         }
     }
 
-    fun resetQuiz(){
+    fun resetQuiz() {
         currentIndex = 0
         score = 0
         quizFinished = false
@@ -67,15 +71,27 @@ class QuizViewModel(private val repository: QuizRepository = QuizRepository()) :
     fun finishQuiz(){
         timerJob?.cancel()
         quizFinished = true
+        // Guardar resultado aquí cuando finalice ↓
+        viewModelScope.launch {
+            userRepository?.saveQuizResult(
+                userId = 1,  // Obtener ID del usuario actual
+                score = score,
+                totalQuestions = totalQuestions
+            )
+        }
     }
 
-    fun startNewQuestion(){
+//    fun finishQuiz() {
+//        timerJob?.cancel()
+//        quizFinished = true
+//    }
+
+    fun startNewQuestion() {
         timerJob?.cancel()
         timerValue = 10
-        if(currentIndex<questions.size){
+        if (currentIndex < questions.size) {
             currentQuestion = questions[currentIndex]
-        }
-        else {
+        } else {
             quizFinished = true
         }
     }

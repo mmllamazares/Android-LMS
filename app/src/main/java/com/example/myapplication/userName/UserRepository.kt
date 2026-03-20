@@ -8,6 +8,9 @@ import java.util.Locale
 // UserRepository.kt
 class UserRepository(private val userDao: UserDao) {
     val user: LiveData<UserEntity> = userDao.getUser()
+    val quizScore: LiveData<Int> = userDao.getQuizScore()
+    val quizTotalQuestions: LiveData<Int> = userDao.getQuizTotalQuestions()
+    val quizCompletedDate: LiveData<String> = userDao.getQuizCompletedDate()
 
     suspend fun saveUser(name: String) {
         userDao.insertUser(UserEntity(name = name))

@@ -42,6 +42,8 @@ import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -55,6 +57,10 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import kotlin.compareTo
+import kotlin.div
+import kotlin.text.toFloat
+import kotlin.toString
 
 // ── Colores ───────────────────────────────────────────────────────────────────
 private val PrimaryBlue = Color(0xFF1A3ADB)
@@ -80,21 +86,32 @@ fun ProgressView(
     onBack: () -> Unit = {},
     onShare: () -> Unit = {},
     onReview: () -> Unit = {},
-    navController: NavController
+    navController: NavController,
+    viewModel: ProgressViewModel
 ) {
 
+    // Observar datos de Room
+    val quizScore by viewModel.quizScore.observeAsState(0)
+    val quizTotalQuestions by viewModel.quizTotalQuestions.observeAsState(0)
+    val userName by viewModel.userName.observeAsState("Usuario")
+
+    // Calcular respuestas correctas e incorrectas
+    val correct = quizScore
+    val incorrect = quizTotalQuestions - quizScore
 
 // Animación del círculo de progreso al entrar
     val animatedProgress = remember { Animatable(0f) }
-    LaunchedEffect(score) {
+    LaunchedEffect(quizScore) {
         animatedProgress.animateTo(
-            targetValue = score / maxScore.toFloat(),
+            targetValue = if (quizTotalQuestions > 0)
+                quizScore / quizTotalQuestions.toFloat()
+            else 0f,
             animationSpec = tween(durationMillis = 1200, easing = EaseOutCubic)
         )
     }
 
     Scaffold(
-        topBar = { ResultTopBar(onBack = onBack, navController) },
+        topBar = { ResultTopBar(onBack = {}, navController) },
         containerColor = BackgroundStart
     ) { innerPadding ->
         Column(
@@ -105,43 +122,33 @@ fun ProgressView(
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Spacer(modifier = Modifier.height(24.dp))
-
-            // Badge icono
             BadgeIcon()
-
             Spacer(modifier = Modifier.height(20.dp))
 
-            // Título
             Text(
-                text = "¡Buen trabajo, $userName!",
+                text = "¡Buen trabajo, $userName!",  // ← Ahora usa el nombre de Room
                 fontSize = 26.sp,
                 fontWeight = FontWeight.Bold,
-                color = TextPrimary,
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center,
-                lineHeight = 32.sp
+                color = TextPrimary
             )
 
             Spacer(modifier = Modifier.height(8.dp))
-
             Text(
-                text = "Has completado el módulo de $moduleName.",
+                text = "Has completado el quiz.",
                 fontSize = 14.sp,
-                color = TextSecondary,
-                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                color = TextSecondary
             )
 
             Spacer(modifier = Modifier.height(36.dp))
 
-            // Círculo de puntuación
             ScoreCircle(
-                score = score,
-                maxScore = maxScore,
+                score = quizScore,  // ← Usa datos de Room
+                maxScore = quizTotalQuestions,
                 progress = animatedProgress.value
             )
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // Tarjetas correctas / incorrectas
             Row(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(12.dp)
@@ -151,7 +158,7 @@ fun ProgressView(
                     icon = Icons.Filled.CheckCircle,
                     iconColor = GreenCorrect,
                     label = "CORRECTAS",
-                    value = correct.toString()
+                    value = correct.toString()  // ← Ahora usa datos de Room
                 )
                 StatCard(
                     modifier = Modifier.weight(1f),

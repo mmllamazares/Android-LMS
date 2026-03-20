@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.example.myapplication.mainView.MainView
 import com.example.myapplication.navigation.AppNavigation
+import com.example.myapplication.quizModule.QuizViewModel
 import com.example.myapplication.ui.theme.MyApplicationTheme
 import com.example.myapplication.userName.UserNameView
 import com.example.myapplication.userName.UserNameViewModel
@@ -33,6 +34,7 @@ import com.example.myapplication.userName.UserNameViewModel
 //}
 class MainActivity : ComponentActivity() {
     private val viewModel: UserNameViewModel by viewModels()
+    private val quizVM: QuizViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,7 +44,7 @@ class MainActivity : ComponentActivity() {
 
                 val savedUser by viewModel.userName.observeAsState()
 
-                AppNavigation(viewModel)
+                AppNavigation(viewModel, quizVM)
 
 //                // Pantalla actual — arranca en Courses si hay usuario, si no en UserName
 //                var currentScreen by remember(savedUser) {

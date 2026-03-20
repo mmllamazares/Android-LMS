@@ -12,6 +12,8 @@ import com.example.myapplication.mainView.Courses
 import com.example.myapplication.mainView.MainView
 //import com.example.myapplication.mainView.MainViewTest
 import com.example.myapplication.progressView.ProgressView
+import com.example.myapplication.quizModule.QuizScreen
+import com.example.myapplication.quizModule.QuizViewModel
 import com.example.myapplication.userName.UserNameView
 import com.example.myapplication.userName.UserNameViewModel
 import kotlin.getValue
@@ -20,7 +22,7 @@ import kotlin.getValue
 //private val viewModel: UserNameViewModel by viewModels()
 
 @Composable
-fun AppNavigation(viewModel: UserNameViewModel) {
+fun AppNavigation(viewModel: UserNameViewModel, quizVM: QuizViewModel) {
     val navController = rememberNavController()
     NavHost(navController = navController, startDestination = AppScreens.MainScreen.route) {
         composable(route = AppScreens.MainScreen.route) { MainView(navController) }
@@ -37,5 +39,6 @@ fun AppNavigation(viewModel: UserNameViewModel) {
         }
         composable(route = AppScreens.UserView.route) { UserNameView(viewModel) }
         composable(route = AppScreens.ProgressView.route) { ProgressView(navController = navController) }
+        composable(route = AppScreens.QuizView.route) { QuizScreen(navController = navController, quizVM = quizVM) }
     }
 }

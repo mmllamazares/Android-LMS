@@ -7,6 +7,8 @@ sealed class AppScreens(val route:String) {
     object UserView: AppScreens("user_view")
     object ProgressView: AppScreens("progress_view")
 
+    object QuizView: AppScreens("quiz_view")
+
     fun withArgs(vararg args: Int):String{
         return buildString {
             append(route)

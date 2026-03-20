@@ -22,6 +22,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowForward
 import androidx.compose.material.icons.filled.AccountBox
 import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material.icons.outlined.CheckCircle
+import androidx.compose.material.icons.outlined.Create
 import androidx.compose.material.icons.outlined.DateRange
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.Info
@@ -454,6 +455,23 @@ fun BottomNavBar(
             },
             label = {
                 Text("Progreso", fontSize = 11.sp)
+            },
+            colors = NavigationBarItemDefaults.colors(
+                selectedIconColor = PrimaryBlue,
+                selectedTextColor = PrimaryBlue,
+                indicatorColor = LightBlue,
+                unselectedIconColor = TextSecondary,
+                unselectedTextColor = TextSecondary
+            )
+        )
+        NavigationBarItem(
+            selected = false,
+            onClick = { navController.navigate(route = AppScreens.QuizView.route) },
+            icon = {
+                Icon(Icons.Outlined.Create, contentDescription = "Quiz")
+            },
+            label = {
+                Text("Prueba", fontSize = 11.sp)
             },
             colors = NavigationBarItemDefaults.colors(
                 selectedIconColor = PrimaryBlue,

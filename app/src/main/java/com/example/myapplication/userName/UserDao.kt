@@ -18,9 +18,15 @@ interface UserDao {
     @Query("SELECT * FROM users LIMIT 1")
     fun getUser(): LiveData<UserEntity>
 
-    @Query("UPDATE users SET quizScore = :score, quizTotalQuestions = :total, quizCompletedDate = :date WHERE id = :userId")
-    suspend fun updateQuizResult(userId: Int, score: Int, total: Int, date: String)
+    @Query("SELECT * FROM users WHERE id = :userId LIMIT 1")
+    suspend fun getUserSync(userId: Int): UserEntity?
 
+
+//    @Query("UPDATE users SET quizScore = :score, quizTotalQuestions = :total, quizCompletedDate = :date WHERE id = :userId")
+//    suspend fun updateQuizResult(userId: Int, score: Int, total: Int, date: String)
+
+    @Update
+    suspend fun updateQuizResult(user: UserEntity)
     @Query("SELECT quizScore FROM users LIMIT 1")
     fun getQuizScore(): LiveData<Int>
 

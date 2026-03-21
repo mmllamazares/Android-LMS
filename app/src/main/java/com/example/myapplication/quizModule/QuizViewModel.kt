@@ -12,7 +12,7 @@ import kotlinx.coroutines.launch
 
 class QuizViewModel(
     private val repository: QuizRepository = QuizRepository(),
-    private val userRepository: UserRepository? = null  // ← AGREGAR
+    private val userRepository: UserRepository  // ← AGREGAR
 ) :
     ViewModel() {
     private val questions = repository.getAllQuestions()
@@ -68,17 +68,60 @@ class QuizViewModel(
         startNewQuestion()
     }
 
-    fun finishQuiz(){
+    fun finishQuiz() {
         timerJob?.cancel()
         quizFinished = true
         // Guardar resultado aquí cuando finalice ↓
+
         viewModelScope.launch {
-            userRepository?.saveQuizResult(
-                userId = 1,  // Obtener ID del usuario actual
-                score = score,
-                totalQuestions = totalQuestions
-            )
+            try {
+                // Obtener el usuario de forma síncrona en la corrutina
+                userRepository.saveQuizResult(
+                    userId = 1,  // O mejor aún, obtén el ID del usuario guardado
+                    score = score,
+                    totalQuestions = totalQuestions
+                )
+            } catch (e: Exception) {
+                // Log para debugging
+                println("Error saving quiz result: ${e.message}")
+            }
         }
+
+//        viewModelScope.launch {
+//            // Obtener el usuario del repository de forma correcta
+//            val currentUser = userRepository.user.value
+//            if (currentUser != null) {
+//                userRepository.saveQuizResult(
+//                    userId = currentUser.id,
+//                    score = score,
+//                    totalQuestions = totalQuestions
+//                )
+//            }
+//        }
+
+
+//        viewModelScope.launch {
+//            val userId = userRepository.user.value?.id
+//            if (userId != null) {
+//                userRepository.saveQuizResult(
+//                    userId = userId,  // ← Usar el ID dinámico
+//                    score = score,
+//                    totalQuestions = totalQuestions
+//                )
+//            } else {
+//                // Manejar caso donde no hay usuario (ej. log o no guardar)
+//                // Log.e("QuizViewModel", "No user found to save quiz result")
+//            }
+//        }
+
+
+        //        viewModelScope.launch {
+//            userRepository.saveQuizResult(
+//                userId = 1,  // Obtener ID del usuario actual
+//                score = score,
+//                totalQuestions = totalQuestions
+//            )
+//        }
     }
 
 //    fun finishQuiz() {

@@ -22,9 +22,12 @@ import com.example.myapplication.mainView.MainView
 import com.example.myapplication.navigation.AppNavigation
 import com.example.myapplication.progressView.ProgressViewModel
 import com.example.myapplication.quizModule.QuizViewModel
+import com.example.myapplication.quizModule.QuizViewModelFactory
 import com.example.myapplication.ui.theme.MyApplicationTheme
+import com.example.myapplication.userName.AppDatabase
 import com.example.myapplication.userName.UserNameView
 import com.example.myapplication.userName.UserNameViewModel
+import com.example.myapplication.userName.UserRepository
 
 
 // Todas las pantallas posibles de la app
@@ -35,7 +38,14 @@ import com.example.myapplication.userName.UserNameViewModel
 //}
 class MainActivity : ComponentActivity() {
     private val viewModel: UserNameViewModel by viewModels()
-    private val quizVM: QuizViewModel by viewModels()
+//    private val quizVM: QuizViewModel by viewModels()
+
+    private val quizVM: QuizViewModel by viewModels {
+        val dao = AppDatabase.getInstance(this).userDao()
+        val repository = UserRepository(dao)
+        QuizViewModelFactory(repository)
+    }
+
     private val progressVM: ProgressViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {

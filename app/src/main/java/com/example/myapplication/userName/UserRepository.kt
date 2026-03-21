@@ -4,6 +4,7 @@ import androidx.lifecycle.LiveData
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
+import kotlin.text.format
 
 // UserRepository.kt
 class UserRepository(private val userDao: UserDao) {
@@ -22,6 +23,19 @@ class UserRepository(private val userDao: UserDao) {
 
     suspend fun saveQuizResult(userId: Int, score: Int, totalQuestions: Int) {
         val currentDate = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(Date())
-        userDao.updateQuizResult(userId, score, totalQuestions, currentDate)
+        val currentUser = userDao.getUserSync(userId) // ← Usar la nueva query
+
+        if (currentUser != null) {
+            // Crear entidad actualizada manteniendo todos los campos
+            val updatedUser = UserEntity(
+                id = currentUser.id,
+                name = currentUser.name,
+                quizScore = score,
+                quizTotalQuestions = totalQuestions,
+                quizCompletedDate = currentDate
+            )
+            userDao.updateQuizResult(updatedUser)
+        }
+//
     }
 }

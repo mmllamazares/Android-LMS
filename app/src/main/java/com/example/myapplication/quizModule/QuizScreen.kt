@@ -25,12 +25,14 @@ fun QuizScreen(navController: NavController, quizVM: QuizViewModel) {
 
 // first UI ==> Alert
     if (quizVM.quizFinished) {
+//        quizVM.finishQuiz()
         AlertDialog(
             onDismissRequest = {},
             title = { Text("Quiz Finished") },
             text = { Text("Your Score is ${quizVM.score} / ${quizVM.totalQuestions}") },
             confirmButton = {
                 Button(onClick = {
+
                     navController.popBackStack()
                 }) {
                     Text("OK")

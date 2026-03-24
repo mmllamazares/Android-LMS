@@ -1,5 +1,7 @@
 package com.example.myapplication.progressView
 
+import android.content.Context
+import android.content.Intent
 import androidx.compose.animation.Animatable
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.EaseOutCubic
@@ -53,6 +55,7 @@ import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -89,7 +92,7 @@ fun ProgressView(
     navController: NavController,
     viewModel: ProgressViewModel
 ) {
-
+    val context = LocalContext.current
     // Observar datos de Room
     val quizScore by viewModel.quizScore.observeAsState(0)
     val quizTotalQuestions by viewModel.quizTotalQuestions.observeAsState(0)
@@ -98,6 +101,17 @@ fun ProgressView(
     // Calcular respuestas correctas e incorrectas
     val correct = quizScore
     val incorrect = quizTotalQuestions - quizScore
+
+    val shareViaWhatsApp = {
+        shareResultsToWhatsApp(
+            context = context,
+            userName = userName,
+            moduleName = moduleName,
+            score = quizScore,
+            totalQuestions = quizTotalQuestions,
+            correctAnswers = correct
+        )
+    }
 
 // Animación del círculo de progreso al entrar
     val animatedProgress = remember { Animatable(0f) }
@@ -173,7 +187,7 @@ fun ProgressView(
 
             // Botón compartir WhatsApp
             Button(
-                onClick = onShare,
+                onClick = shareViaWhatsApp,
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(52.dp),
@@ -213,6 +227,62 @@ fun ProgressView(
 
             Spacer(modifier = Modifier.height(24.dp))
         }
+    }
+}
+
+// ── Función para compartir por WhatsApp ───────────────────────────────────────
+private fun shareResultsToWhatsApp(
+    context: Context,
+    userName: String,
+    moduleName: String,
+    score: Int,
+    totalQuestions: Int,
+    correctAnswers: Int
+) {
+    val percentage = if (totalQuestions > 0) (score * 100) / totalQuestions else 0
+
+    val message = """
+        🦷 *Resultados EstomatoLearn*
+        
+        ¡Hola! Soy *$userName*.
+        
+        Acabo de completar el módulo: *$moduleName*
+        
+        📊 *Calificación:* $score/$totalQuestions ($percentage%)
+        ✅ Correctas: $correctAnswers
+        ❌ Incorrectas: ${totalQuestions - correctAnswers}
+        
+        Enviado desde la app EstomatoLearn 📱
+    """.trimIndent()
+
+    // Intent específico para WhatsApp
+    val whatsappIntent = Intent().apply {
+        action = Intent.ACTION_SEND
+        type = "text/plain"
+        putExtra(Intent.EXTRA_TEXT, message)
+        `package` = "com.whatsapp"
+    }
+
+    // Verificar si WhatsApp está instalado
+    val packageManager = context.packageManager
+    val resolveInfo = packageManager.queryIntentActivities(whatsappIntent, 0)
+
+    if (resolveInfo.isNotEmpty()) {
+        // WhatsApp está instalado, abrir directamente
+        context.startActivity(whatsappIntent)
+    } else {
+        // WhatsApp no está instalado, usar chooser genérico
+        val genericIntent = Intent().apply {
+            action = Intent.ACTION_SEND
+            type = "text/plain"
+            putExtra(Intent.EXTRA_TEXT, message)
+        }
+        context.startActivity(
+            Intent.createChooser(
+                genericIntent,
+                "Compartir resultados vía"
+            )
+        )
     }
 }
 

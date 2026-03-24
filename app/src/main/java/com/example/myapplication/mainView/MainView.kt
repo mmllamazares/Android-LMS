@@ -257,7 +257,7 @@ fun CourseCard(course: CourseItem, navController: NavController) {
                         fontWeight = FontWeight.Bold,
                         fontSize = 15.sp,
                         color = TextPrimary,
-                        maxLines = 2,
+                        maxLines = 3,
                         overflow = TextOverflow.Ellipsis
                     )
                     Spacer(modifier = Modifier.height(4.dp))
@@ -265,7 +265,7 @@ fun CourseCard(course: CourseItem, navController: NavController) {
                         text = course.description,
                         fontSize = 12.sp,
                         color = TextSecondary,
-                        maxLines = 2,
+                        maxLines = 3,
                         overflow = TextOverflow.Ellipsis
                     )
                 }

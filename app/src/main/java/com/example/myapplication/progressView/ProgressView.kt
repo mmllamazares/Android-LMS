@@ -7,6 +7,7 @@ import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.EaseOutCubic
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -56,10 +57,12 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.myapplication.R
 import kotlin.compareTo
 import kotlin.div
 import kotlin.text.toFloat
@@ -102,14 +105,24 @@ fun ProgressView(
     val correct = quizScore
     val incorrect = quizTotalQuestions - quizScore
 
+//    val shareViaWhatsApp = {
+//        shareResultsToWhatsApp(
+//            context = context,
+//            userName = userName,
+//            moduleName = moduleName,
+//            score = quizScore,
+//            totalQuestions = quizTotalQuestions,
+//            correctAnswers = correct
+//        )
+//    }
+
     val shareViaWhatsApp = {
-        shareResultsToWhatsApp(
-            context = context,
-            userName = userName,
-            moduleName = moduleName,
-            score = quizScore,
-            totalQuestions = quizTotalQuestions,
-            correctAnswers = correct
+        ShareCardGenerator.generateAndShare(
+            context        = context,
+            userName       = userName,
+            moduleName     = moduleName,
+            score          = quizScore,
+            totalQuestions = quizTotalQuestions
         )
     }
 
@@ -210,20 +223,20 @@ fun ProgressView(
             Spacer(modifier = Modifier.height(16.dp))
 
             // Revisar errores
-            TextButton(onClick = onReview) {
-                Icon(
-                    imageVector = Icons.Outlined.Refresh,
-                    contentDescription = null,
-                    tint = TextSecondary,
-                    modifier = Modifier.size(16.dp)
-                )
-                Spacer(modifier = Modifier.width(6.dp))
-                Text(
-                    text = "Revisar mis errores",
-                    color = TextSecondary,
-                    fontSize = 14.sp
-                )
-            }
+//            TextButton(onClick = onReview) {
+//                Icon(
+//                    imageVector = Icons.Outlined.Refresh,
+//                    contentDescription = null,
+//                    tint = TextSecondary,
+//                    modifier = Modifier.size(16.dp)
+//                )
+//                Spacer(modifier = Modifier.width(6.dp))
+//                Text(
+//                    text = "Revisar mis errores",
+//                    color = TextSecondary,
+//                    fontSize = 14.sp
+//                )
+//            }
 
             Spacer(modifier = Modifier.height(24.dp))
         }
@@ -323,18 +336,19 @@ fun ResultTopBar(onBack: () -> Unit, navController: NavController) {
 fun BadgeIcon() {
     Box(
         modifier = Modifier
-            .size(64.dp)
+            .size(132.dp)
             .clip(CircleShape)
             .background(LightBlue),
         contentAlignment = Alignment.Center
     ) {
-        Icon(
-//            imageVector = Icons.Filled.MilitaryTech,
-            imageVector = Icons.Filled.AccountCircle,
-            contentDescription = null,
-            tint = PrimaryBlue,
-            modifier = Modifier.size(36.dp)
-        )
+        Image(painter = painterResource(id = R.drawable.molly1), contentDescription = "Molly dentista")
+//        Icon(
+////            imageVector = Icons.Filled.MilitaryTech,
+//            imageVector = Icons.Filled.AccountCircle,
+//            contentDescription = null,
+//            tint = PrimaryBlue,
+//            modifier = Modifier.size(36.dp)
+//        )
     }
 }
 

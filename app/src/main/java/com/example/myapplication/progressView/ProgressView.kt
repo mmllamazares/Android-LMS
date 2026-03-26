@@ -161,7 +161,7 @@ fun ProgressView(
 
             Spacer(modifier = Modifier.height(8.dp))
             Text(
-                text = "Has completado el quiz.",
+                text = "Has completado el examen.",
                 fontSize = 14.sp,
                 color = TextSecondary
             )

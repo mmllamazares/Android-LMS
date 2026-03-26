@@ -12,9 +12,9 @@ import kotlinx.coroutines.launch
 
 class QuizViewModel(
     private val repository: QuizRepository = QuizRepository(),
-    private val userRepository: UserRepository  // ← AGREGAR
-) :
-    ViewModel() {
+    private val userRepository: UserRepository
+) : ViewModel() {
+
     private val questions = repository.getAllQuestions()
 
     var currentIndex by mutableStateOf(0)
@@ -23,7 +23,7 @@ class QuizViewModel(
     var currentQuestion by mutableStateOf(questions[0])
         private set
 
-    var timerValue by mutableStateOf(10)
+    var timerValue by mutableStateOf(20)
         private set
 
     var score by mutableStateOf(0)
@@ -32,10 +32,14 @@ class QuizViewModel(
     var quizFinished by mutableStateOf(false)
         private set
 
+    // NUEVO: null = sin responder, true = correcto, false = incorrecto
+    var lastAnswerCorrect by mutableStateOf<Boolean?>(null)
+        private set
+
     private var timerJob: Job? = null
 
-    val totalQuestions: Int
-        get() = questions.size
+    val totalQuestions: Int get() = questions.size
+    val incorrectCount: Int get() = currentIndex - score
 
     fun startTimer() {
         timerJob = viewModelScope.launch {
@@ -43,21 +47,26 @@ class QuizViewModel(
                 delay(1000)
                 timerValue--
             }
-            // timer == 0
             finishQuiz()
         }
     }
 
     fun answerQuestion(userAnswer: Boolean) {
         timerJob?.cancel()
-        if (userAnswer == currentQuestion.answer) {
-            score++
-        }
+        val isCorrect = userAnswer == currentQuestion.answer
+        lastAnswerCorrect = isCorrect
+        if (isCorrect) score++
         currentIndex++
-        if (currentIndex < questions.size) {
-            startNewQuestion()
-        } else {
-            finishQuiz()
+
+        // Espera 800ms para que el usuario vea el feedback antes de avanzar
+        viewModelScope.launch {
+            delay(800)
+            lastAnswerCorrect = null
+            if (currentIndex < questions.size) {
+                startNewQuestion()
+            } else {
+                finishQuiz()
+            }
         }
     }
 
@@ -65,78 +74,33 @@ class QuizViewModel(
         currentIndex = 0
         score = 0
         quizFinished = false
+        lastAnswerCorrect = null
         startNewQuestion()
     }
 
     fun finishQuiz() {
         timerJob?.cancel()
         quizFinished = true
-        // Guardar resultado aquí cuando finalice ↓
-
         viewModelScope.launch {
             try {
-                // Obtener el usuario de forma síncrona en la corrutina
                 userRepository.saveQuizResult(
-                    userId = 1,  // O mejor aún, obtén el ID del usuario guardado
+                    userId = 1,
                     score = score,
                     totalQuestions = totalQuestions
                 )
             } catch (e: Exception) {
-                // Log para debugging
                 println("Error saving quiz result: ${e.message}")
             }
         }
-
-//        viewModelScope.launch {
-//            // Obtener el usuario del repository de forma correcta
-//            val currentUser = userRepository.user.value
-//            if (currentUser != null) {
-//                userRepository.saveQuizResult(
-//                    userId = currentUser.id,
-//                    score = score,
-//                    totalQuestions = totalQuestions
-//                )
-//            }
-//        }
-
-
-//        viewModelScope.launch {
-//            val userId = userRepository.user.value?.id
-//            if (userId != null) {
-//                userRepository.saveQuizResult(
-//                    userId = userId,  // ← Usar el ID dinámico
-//                    score = score,
-//                    totalQuestions = totalQuestions
-//                )
-//            } else {
-//                // Manejar caso donde no hay usuario (ej. log o no guardar)
-//                // Log.e("QuizViewModel", "No user found to save quiz result")
-//            }
-//        }
-
-
-        //        viewModelScope.launch {
-//            userRepository.saveQuizResult(
-//                userId = 1,  // Obtener ID del usuario actual
-//                score = score,
-//                totalQuestions = totalQuestions
-//            )
-//        }
     }
-
-//    fun finishQuiz() {
-//        timerJob?.cancel()
-//        quizFinished = true
-//    }
 
     fun startNewQuestion() {
         timerJob?.cancel()
-        timerValue = 10
+        timerValue = 20
         if (currentIndex < questions.size) {
             currentQuestion = questions[currentIndex]
         } else {
             quizFinished = true
         }
     }
-
 }

@@ -486,7 +486,7 @@ fun BottomNavBar(
         NavigationBarItem(
             selected = false,
 //            onClick = { onTabSelected(CoursesTab.Perfil) },
-            onClick = { navController.navigate(route = AppScreens.UserView.route) },
+            onClick = { navController.navigate(route = AppScreens.UserViewBack.route) },
             icon = {
                 Icon(Icons.Outlined.Person, contentDescription = "Perfil")
             },

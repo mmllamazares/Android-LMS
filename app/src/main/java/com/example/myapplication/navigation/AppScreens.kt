@@ -5,6 +5,7 @@ sealed class AppScreens(val route:String) {
     object CourseDetailView: AppScreens("course_detail_view")
 
     object UserView: AppScreens("user_view")
+    object UserViewBack: AppScreens("user_view_back")
     object ProgressView: AppScreens("progress_view")
 
     object QuizView: AppScreens("quiz_view")

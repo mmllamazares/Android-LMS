@@ -93,6 +93,7 @@ fun AppNavigation(
                 )
             }
             composable(route = AppScreens.UserView.route) { UserNameView(viewModel) }
+            composable(route = AppScreens.UserViewBack.route) { UserNameView(viewModel, onBack = { navController.popBackStack() }) }
             composable(route = AppScreens.ProgressView.route) {
                 ProgressView(
                     navController = navController,

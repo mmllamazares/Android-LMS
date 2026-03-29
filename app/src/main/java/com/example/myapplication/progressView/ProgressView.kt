@@ -322,11 +322,11 @@ fun ResultTopBar(onBack: () -> Unit, navController: NavController) {
                 )
             }
         },
-        actions = {
-            IconButton(onClick = {}) {
-                Icon(Icons.Filled.MoreVert, contentDescription = "Más opciones", tint = TextPrimary)
-            }
-        },
+//        actions = {
+//            IconButton(onClick = {}) {
+//                Icon(Icons.Filled.MoreVert, contentDescription = "Más opciones", tint = TextPrimary)
+//            }
+//        },
         colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
     )
 }

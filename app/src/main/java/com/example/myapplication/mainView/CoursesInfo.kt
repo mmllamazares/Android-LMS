@@ -1,6 +1,7 @@
 package com.example.myapplication.mainView
 
 import androidx.compose.ui.graphics.Color
+import com.example.myapplication.R
 
 // ── Modelo de contenido enriquecido ──────────────────────────────────────────
 
@@ -16,6 +17,7 @@ data class CourseItem(
     val title: String,
     val description: String,
     val content: String,                          // se mantiene por compatibilidad
+    val imageRes: Int? = null,
     val sections: List<CourseSection>? = null,    // nuevo: contenido estructurado
     val categoryLabel: String = "Endodoncia",
     val moduleIndex: Int? = null,                 // ej. 3
@@ -38,6 +40,7 @@ object Courses {
         CourseItem(
             id = 0,
             title = "Acceso Cameral",
+            imageRes = R.drawable.acceso_cameral,
             description = "Introducción al procedimiento quirúrgico de apertura de la cámara pulpar.",
             content = "",
             categoryLabel = "Endodoncia",
@@ -61,6 +64,7 @@ object Courses {
         CourseItem(
             id = 1,
             title = "Aspectos a considerar",
+            imageRes = R.drawable.aspectos_a_considerar,
             description = "Principios y reglas fundamentales que guían la correcta ejecución del acceso cameral.",
             content = "",
             categoryLabel = "Técnica",
@@ -97,6 +101,7 @@ object Courses {
         CourseItem(
             id = 2,
             title = "Pasos de la técnica",
+            imageRes = R.drawable.pasos_tecnica,
             description = "Secuencia clínica paso a paso para realizar la apertura de la cámara pulpar.",
             content = "",
             categoryLabel = "Técnica",
@@ -119,6 +124,7 @@ object Courses {
         CourseItem(
             id = 3,
             title = "Dientes Anteriores",
+            imageRes = R.drawable.dientes_anteriores,
             description = "Técnica de acceso cameral para incisivos y caninos.",
             content = "",
             categoryLabel = "Anatomía clínica",
@@ -159,6 +165,7 @@ object Courses {
         CourseItem(
             id = 4,
             title = "Premolares",
+            imageRes = R.drawable.premolares,
             description = "Técnica de apertura cameral para premolares con sus particularidades anatómicas.",
             content = "",
             categoryLabel = "Anatomía clínica",
@@ -188,6 +195,7 @@ object Courses {
         CourseItem(
             id = 5,
             title = "Molares Maxilares",
+            imageRes = R.drawable.molares_maxilares,
             description = "Apertura cameral en molares superiores: forma triangular o trapezoidal.",
             content = "",
             categoryLabel = "Anatomía clínica",
@@ -217,6 +225,7 @@ object Courses {
         CourseItem(
             id = 6,
             title = "Molares Mandibulares",
+            imageRes = R.drawable.molares_mandibulares,
             description = "Apertura cameral para molares inferiores: triángulo de base mesial.",
             content = "",
             categoryLabel = "Anatomía clínica",
@@ -247,6 +256,7 @@ object Courses {
         CourseItem(
             id = 7,
             title = "Instrumentación de Conductos",
+            imageRes = R.drawable.intrumentacion,
             description = "Objetivo y fundamento de la instrumentación radicular.",
             content = "",
             categoryLabel = "Endodoncia",

@@ -1,5 +1,6 @@
 package com.example.myapplication.mainView
 
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -58,6 +59,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.style.TextOverflow
@@ -227,27 +230,47 @@ fun CourseCard(course: CourseItem, navController: NavController) {
         Column(modifier = Modifier.padding(16.dp)) {
 
             // Imagen + info
-            Row(verticalAlignment = Alignment.Top) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
                 // Imagen placeholder
-                Box(
-                    modifier = Modifier
-                        .size(width = 90.dp, height = 70.dp)
-                        .clip(RoundedCornerShape(12.dp))
-                        .background(
-                            Brush.linearGradient(
-                                listOf(course.imageColor, course.imageColor.copy(alpha = 0.7f))
-                            )
-                        ),
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(
-                        //medical services icon
-                        imageVector = Icons.Filled.AccountBox,
-                        contentDescription = null,
-                        tint = Color.White.copy(alpha = 0.6f),
-                        modifier = Modifier.size(32.dp)
+
+                if (course.imageRes != null) {
+                    Image(
+                        painter = painterResource(id = course.imageRes),
+                        contentDescription = course.title,
+                        contentScale = ContentScale.Crop,
+                        modifier = Modifier
+                            .size(width = 90.dp, height = 70.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                    )
+                } else {
+                    // Fallback: bloque de color sólido si no hay imagen
+                    Box(
+                        modifier = Modifier
+                            .size(width = 90.dp, height = 70.dp)
+                            .clip(RoundedCornerShape(12.dp))
+                            .background(course.imageColor)
                     )
                 }
+
+//                Box(
+//                    modifier = Modifier
+//                        .size(width = 90.dp, height = 70.dp)
+//                        .clip(RoundedCornerShape(12.dp))
+//                        .background(
+//                            Brush.linearGradient(
+//                                listOf(course.imageColor, course.imageColor.copy(alpha = 0.7f))
+//                            )
+//                        ),
+//                    contentAlignment = Alignment.Center
+//                ) {
+//                    Icon(
+//                        //medical services icon
+//                        imageVector = Icons.Filled.AccountBox,
+//                        contentDescription = null,
+//                        tint = Color.White.copy(alpha = 0.6f),
+//                        modifier = Modifier.size(32.dp)
+//                    )
+//                }
 
                 Spacer(modifier = Modifier.width(12.dp))
 

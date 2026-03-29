@@ -15,7 +15,8 @@ class QuizViewModel(
     private val userRepository: UserRepository
 ) : ViewModel() {
 
-    private val questions = repository.getAllQuestions()
+    // ← var en lugar de val para poder reshuffear en resetQuiz()
+    private var questions = repository.getAllQuestions().shuffled().take(5)
 
     var currentIndex by mutableStateOf(0)
         private set
@@ -32,13 +33,12 @@ class QuizViewModel(
     var quizFinished by mutableStateOf(false)
         private set
 
-    // NUEVO: null = sin responder, true = correcto, false = incorrecto
     var lastAnswerCorrect by mutableStateOf<Boolean?>(null)
         private set
 
     private var timerJob: Job? = null
 
-    val totalQuestions: Int get() = questions.size
+    val totalQuestions: Int get() = questions.size      // siempre 5, automático
     val incorrectCount: Int get() = currentIndex - score
 
     fun startTimer() {
@@ -58,7 +58,6 @@ class QuizViewModel(
         if (isCorrect) score++
         currentIndex++
 
-        // Espera 800ms para que el usuario vea el feedback antes de avanzar
         viewModelScope.launch {
             delay(800)
             lastAnswerCorrect = null
@@ -71,6 +70,7 @@ class QuizViewModel(
     }
 
     fun resetQuiz() {
+        questions = repository.getAllQuestions().shuffled().take(5)  // ← nuevo set aleatorio
         currentIndex = 0
         score = 0
         quizFinished = false
@@ -84,8 +84,8 @@ class QuizViewModel(
         viewModelScope.launch {
             try {
                 userRepository.saveQuizResult(
-                    userId = 1,
-                    score = score,
+                    userId         = 1,
+                    score          = score,
                     totalQuestions = totalQuestions
                 )
             } catch (e: Exception) {
